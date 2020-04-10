@@ -1,0 +1,129 @@
+<ui:composition template="/WEB-INF/layout.xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="body">
+		<f:metadata>
+			<ui:param name="bodyParam" value="Relatorio de Incidentes" />
+		</f:metadata>
+		<style type="text/css">
+.ui-paginator a {
+	margin-right: 5px;
+}
+</style>
+		<h:form id="form1">
+			<p:fieldset legend="Pesquisa" style="margin-bottom:20px">
+				<h:panelGrid columns="5" cellpadding="5">
+
+					<h:outputText value="Data Inicio:" />
+					<p:datePicker id="Dtin"
+						value="#{tratarIncidenteMB.selectedIncidente.previsaoCorrecao}"
+						size="10" />
+
+
+					<h:outputText value="Data Fim:" />
+					<p:datePicker id="dtfim"
+						value="#{tratarIncidenteMB.selectedIncidente.previsaoCorrecao}"
+						size="10" />
+
+					<p:commandButton id="cmPsq" value="PESQUISAR"
+						action="reportIncidentes.xhtml"></p:commandButton>
+
+					<h:outputText value="Status:" />
+					<p:inputText id="statufdss" value=""></p:inputText>
+
+					<h:outputText value="Status:" />
+					<p:inputText id="statusd" value=""></p:inputText>
+				</h:panelGrid>
+			</p:fieldset>
+		</h:form>
+		<h:form id="form2">
+
+			<p:dataTable id="tbl" var="incidente"
+				value="#{reportIncidentesMB.incidentes}"
+				rendered="#{reportIncidentesMB.usuarioTemPermissaoTela}"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
+				paginator="true" rows="10" style="margin-bottom:20px">
+
+				<f:facet name="{Exporters}">
+					<div style="float: right; padding-top: 5px;">
+						<h:commandLink>
+							<p:graphicImage name="/img/excel.png" width="24" />
+							<p:dataExporter type="xls"
+								postProcessor="#{reportIncidentesMB.postProcessXLS}"
+								target="tbl" fileName="incidentes" />
+						</h:commandLink>
+
+						<h:commandLink>
+							<p:graphicImage name="/img/pdf.png" width="24" />
+							<p:dataExporter type="pdf" target="tbl" fileName="incidentes" />
+						</h:commandLink>
+					</div>
+				</f:facet>
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Id" />
+					</f:facet>
+					<h:outputText value="#{incidente.id}" />
+				</p:column>
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Area" />
+					</f:facet>
+					<h:outputText value="#{incidente.area}" />
+				</p:column>
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Turno" />
+					</f:facet>
+					<h:outputText value="#{incidente.turno}" />
+				</p:column>
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Descricao" />
+					</f:facet>
+					<h:outputText value="#{incidente.descricao}" />
+				</p:column>
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Status" />
+					</f:facet>
+					<h:outputText value="#{incidente.status}" />
+				</p:column>
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Parou Producao?" />
+					</f:facet>
+					<h:outputText value="#{incidente.paraProducao} " />
+				</p:column>
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Protocolo" />
+					</f:facet>
+					<h:outputText value="#{incidente.protocolo} " />
+				</p:column>
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Data Tratamento" />
+					</f:facet>
+					<h:outputText value="#{incidente.dataTratamentoFormatado} " />
+				</p:column>
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Descricao Tratamento" />
+					</f:facet>
+					<h:outputText value="#{incidente.descricaoTratamento} " />
+				</p:column>
+			</p:dataTable>
+			<p:outputLabel
+				rendered="#{reportIncidentesMB.usuarioTemPermissaoTela eq false}"
+				style="color: red">USUARIO NAO POSSUI PERMISSAO PARA ACESSAR ESSA PAGINA</p:outputLabel>
+		</h:form>
+	</ui:define>
+</ui:composition>

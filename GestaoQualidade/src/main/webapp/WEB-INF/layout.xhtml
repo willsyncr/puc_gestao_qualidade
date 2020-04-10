@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<f:view contentType="text/html; ISO-8859-1">
+	<h:head>
+		<f:facet name="first">
+			<meta http-equiv="X-UA-Compatible" content="EmulateIE8" />
+			<meta content='text/html; ISO-8859-1' http-equiv="Content-Type" />
+			<title>Gestao Qualidade Automotiva</title>
+
+			<link rel="shortcut icon"
+				href="/resources/img/engrenagens.jfif" />
+			<link rel="icon" type="image/gif"
+				href="/resources/img/engrenagens.jfif" />
+		</f:facet>
+
+		<link type="text/css" rel="stylesheet"
+			href="#{request.contextPath}/css/default.css" />
+
+		<script type="text/javascript">
+			function handleRequest(xhr, status, args, dlgName) {
+				if (args.validationFailed) {
+					PF(dlgName).jq.effect("shake", {
+						times : 5
+					}, 100);
+				} else {
+					PF(dlgName).hide();
+				}
+			}
+		</script>
+	</h:head>
+
+	<h:body>
+		<p:layout fullPage="true">
+			<h:form id="topoForm">
+				<p:layoutUnit id="top" position="north" size="15%">
+					<h:panelGrid columns="4" style="width: 100%;" border="0">
+						<h:graphicImage library="images" value="/resources/img/engrenagens.jfif"
+							height="77" />
+						<h:outputLabel style="font-weight: bold; font-size: 40px"
+							value="Gestão Qualidade Automotiva" />
+						<h:outputLabel>Bem vindo <span style="font-weight: bold; color: red">#{criaIncidenteMB.usuarioLogado.nome}</span></h:outputLabel>
+						<p:commandLink action="#{loginMB.logout}">LOGOUT</p:commandLink>
+					</h:panelGrid>
+				</p:layoutUnit>
+			</h:form>
+			<p:layoutUnit id="bottom" position="south" size="7%">
+				<div align="center">
+					<h:outputLabel value="GQA - Gestão Qualidade Automotiva" />
+				</div>
+			</p:layoutUnit>
+
+			<p:layoutUnit id="left" position="west" resizable="true"
+				closable="true" collapsible="true"  header="MENU">
+				<p:menu >
+					<p:submenu label="Gestão Incidentes" icon="ui-icon-document">
+						<p:menuitem value="Cadastro" url="cadastro.xhtml" />
+						<p:menuitem value="Tratar" url="tratarIncidente.xhtml" />
+						<p:menuitem value="Recall" url="recall.xhtml" />
+					</p:submenu>
+					<p:submenu label="Relatório" icon="ui-icon-document">
+						<p:menuitem value="Incidentes" url="reportIncidents.xhtml" />
+					</p:submenu>
+
+					<p:submenu label="Normalização" icon="ui-icon-pencil">
+						<p:menuitem value="Atualizar Normativas"
+							url="home.xhtml"
+							icon="ui-icon-arrowreturnthick-1-w"></p:menuitem>
+						<p:menuitem value="Atualizar Consultorias"
+							url="home.xhtml"
+							icon="ui-icon-arrowreturnthick-1-w"></p:menuitem>
+					</p:submenu>
+				</p:menu>
+			</p:layoutUnit>
+			<p:layoutUnit id="center1" position="center"
+				header="#{bodyParam ne null ? bodyParam : 'HOME PAGE'}"
+				styleClass="textPage" size="60%">
+				<ui:insert name="body" />
+			</p:layoutUnit>
+
+		</p:layout>
+	</h:body>
+
+</f:view>
+</html>

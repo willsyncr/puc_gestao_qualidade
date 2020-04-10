@@ -1,0 +1,398 @@
+swagger: '2.0'
+info:
+  title: IncidentsManager
+  version: 'v1'
+  description: 'API para Gerenciamento de Incidentes Automobilisticos baseados em tratativas para Gestão de Qualidade do setor'
+schemes:
+  - https
+paths:
+  /incidents:
+    post:
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      description: Consulta incidentes por range de data
+      tags:
+        - Consulta incidentes por range de data
+      parameters:
+        - in: body
+          name: Request
+          required: true
+          schema:
+            $ref: '#/definitions/RequestIncidentList'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ResponseIncidentList'
+        '400':
+          description: Invalid syntax
+          schema:
+            $ref: '#/definitions/ResponseError'
+        '401':
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/ResponseError'
+        '415':
+          description: Unsupported Media Type
+        '429':
+          description: Too Many Requests
+          schema:
+            $ref: '#/definitions/ResponseError'
+        '500':
+          description: Internal error
+          schema:
+            $ref: '#/definitions/ResponseError'
+        '504':
+          description: Gateway timeout
+          schema:
+            $ref: '#/definitions/ResponseError'
+      x-auth-type: Application & Application User
+      x-throttling-tier: Unlimited
+  /incident:
+    post:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      description: Cria Incidente de Produção no setor Automotivo
+      tags:
+        - Cria Incidente de Produção no setor Automotivo
+      parameters:
+        - in: body
+          name: Request
+          required: true
+          schema:
+            $ref: '#/definitions/RequestIncident'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ResponseIncident'
+        '400':
+          description: Invalid syntax
+          schema:
+            $ref: '#/definitions/ResponseError'
+        '401':
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/ResponseError'
+        '415':
+          description: Unsupported Media Type
+        '429':
+          description: Too Many Requests
+          schema:
+            $ref: '#/definitions/ResponseError'
+        '500':
+          description: Internal error
+          schema:
+            $ref: '#/definitions/ResponseError'
+        '504':
+          description: Gateway timeout
+          schema:
+            $ref: '#/definitions/ResponseError'
+      x-auth-type: Application & Application User
+      x-throttling-tier: Unlimited
+  /treatsIncident:
+    patch:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      description: Trata Incidente de Produção no setor Automotivo
+      tags:
+        - Trata Incidente de Produção no setor Automotivo
+      parameters:
+        - in: body
+          name: Request
+          required: true
+          schema:
+            $ref: '#/definitions/RequestTreatsIncident'
+      responses:
+        '204':
+          description: No Content
+          schema:
+            $ref: '#/definitions/ResponseTreatsIncident'
+        '400':
+          description: Invalid syntax
+          schema:
+            $ref: '#/definitions/ResponseError'
+        '401':
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/ResponseError'
+        '415':
+          description: Unsupported Media Type
+        '429':
+          description: Too Many Requests
+          schema:
+            $ref: '#/definitions/ResponseError'
+        '500':
+          description: Internal error
+          schema:
+            $ref: '#/definitions/ResponseError'
+        '504':
+          description: Gateway timeout
+          schema:
+            $ref: '#/definitions/ResponseError'
+      x-auth-type: Application & Application User
+      x-throttling-tier: Unlimited
+definitions:
+  RequestIncidentList:
+    type: object
+    required:
+      - startDate
+      - endDate
+    properties:
+      startDate:
+        type: string
+        format: date-time
+        description: Data Inicio da Pesquisa
+      endDate:
+        type: string
+        format: date-time
+        description: Data Fim da Pesquisa 
+      status:
+        type: string
+        description: Status do aumejado na consulta de incidentes 
+      isRecall:
+        type: boolean
+        description: Apenas incidentes com RECALL registrados? (true = sim, false = nao) 
+      isTreated:
+        type: boolean
+        description: Apenas incidentes tratados? (true = sim, false = nao) 
+      maxResults:
+        type: integer
+        description: Quantidade maxima de resultados esperados na consulta
+  ResponseIncidentList:
+    type: object
+    properties:
+      incidents:
+        type: array
+        description: Lista de dispositivos
+        items:
+          properties:
+            userName:
+              type: string
+              description: Nome o Usuario que Criou o Incidente
+            login:
+              type: string
+              description: Login do Usuário que Criou o Incidente 
+            profileName:
+              type: string
+              description: Nome do Perfil do Usuário que Criou o Incidente 
+            incident:
+              type: object        
+              properties:        
+                id:
+                  type: string
+                  description: Identificador do Incidente Registrado
+                area:
+                  type: string
+                  description: Area de atuacao do usuario que criou o Incidente Caso se trate de um funcionario Montador ou Gerente de Producao
+                reason:
+                  type: string
+                  description: Razão do Incidente 
+                description:
+                  type: string
+                  description: Descrição do Ocorrido no Incidente criado pelo Usuario 
+                status:
+                  type: string
+                  description: Status do Incidente
+                chassi:
+                  type: string
+                  description: Chassi do veiculo com constatacao de incidente na linha de montagem ou reportado pelo cliente
+                creationDate:
+                  type: string
+                  format: date-time
+                  description: Data de Criacao do Incidente
+                treatmentPrevisionDate:
+                  type: string
+                  format: date-time
+                  description: Data Previsao de Tratamento do Incidente      
+                stopProduction:
+                  type: boolean
+                  description: Para producao por conta da criticidade do Incidente             
+                protocol:
+                  type: string
+                  description: Protocolo de Registro do Incidente
+            incidentTreatment:
+              type: object        
+              properties:
+                login:
+                  type: string
+                  description: Login de quem Tratou o Incidente 
+                userName:
+                  type: string
+                  description: Usuario que Tratou o Incidente 
+                treatmentDate:
+                  type: string
+                  format: date-time
+                  description: Data de Tratamento do Incidente                
+                description:
+                  type: string
+                  description: Descrição do Tratamento do Incidente criado pelo Usuario que tratou o mesmo
+                sendRecall:
+                  type: object        
+                  properties:            
+                    recall:
+                      type: boolean
+                      description: Foi gerado RECALL por conta do incidente               
+                    recallBody:
+                      type: boolean
+                      description: Mensagem enviada no corpo do RECALL           
+                    recallSent:
+                      type: boolean
+                      description: RECALL foi divulgado aos Parceiros                  
+                    recallSentDate:
+                      type: string
+                      format: date-time
+                      description: RECALL foi divulgado aos Parceiros na Data e Hora          
+                    recallSentMessageJson:
+                      type: string
+                      description: Mensagem de RECALL enviada no formato JSON         
+                    recallSentMessageXml:
+                      type: string
+                      description: Mensagem de RECALL enviada no formato XML
+  RequestIncident:
+    type: object
+    required:
+      - userName
+      - login
+      - profileName
+      - incident
+    properties:
+      userName:
+        type: string
+        description: Nome o Usuario que Criou o Incidente
+      login:
+        type: string
+        description: Login do Usuário que Criou o Incidente 
+      profileName:
+        type: string
+        description: Nome do Perfil do Usuário que Criou o Incidente 
+      incident:
+        type: object
+        required:
+          - reason
+          - description
+          - status
+        properties:
+          area:
+            type: string
+            description: Area de atuacao do usuario que criou o Incidente Caso se trate de um funcionario Montador ou Gerente de Producao
+          reason:
+            type: string
+            description: Razão do Incidente 
+          description:
+            type: string
+            description: Descrição do Ocorrido no Incidente criado pelo Usuario 
+          status:
+            type: string
+            description: Status do Incidente
+          chassi:
+            type: string
+            description: Chassi do veiculo com constatacao de incidente na linha de montagem ou reportado pelo cliente
+          creationDate:
+            type: string
+            format: date-time
+            description: Data de Criacao do Incidente
+          treatmentPrevisionDate:
+            type: string
+            format: date-time
+            description: Data Previsao de Tratamento do Incidente            
+          stopProduction:
+            type: boolean
+            description: Para producao por conta da criticidade do Incidente
+  ResponseIncident:
+    type: object
+    properties:
+      protocol:
+        type: string
+        description: Protocolo de Criacao de Incidente
+  RequestTreatsIncident:
+    type: object
+    required:
+      - incident
+      - incidentTreatment
+    properties:
+      incident:
+        type: object
+        required:
+          - id        
+        properties:        
+          id:
+            type: string
+            description: Identificador do Incidente Registrado      
+      incidentTreatment:
+        type: object   
+        required:
+          - login
+          - userName 
+          - treatmentDate 
+          - description  
+          - sentRecall     
+        properties:
+          login:
+            type: string
+            description: Login de quem Tratou o Incidente 
+          userName:
+            type: string
+            description: Usuario que Tratou o Incidente 
+          treatmentDate:
+            type: string
+            format: date-time
+            description: Data de Tratamento do Incidente                
+          description:
+            type: string
+            description: Descrição do Tratamento do Incidente criado pelo Usuario que tratou o mesmo
+          sendRecall:
+            type: object    
+            required:
+              - recall       
+            properties:            
+              recall:
+                type: boolean
+                description: Foi gerado RECALL por conta do incidente             
+              recallBody:
+                type: boolean
+                description: Mensagem enviada no corpo do RECALL          
+              recallSent:
+                type: boolean
+                description: RECALL foi divulgado aos Parceiros          
+              recallSentDate:
+                type: string
+                format: date-time
+                description: RECALL foi divulgado aos Parceiros na Data e Hora 
+  ResponseTreatsIncident:
+    type: object                
+  ResponseError:
+    type: object
+    properties:
+      timestamp:
+        type: integer
+        format: int64
+        description: Timestamp
+      status:
+        type: integer
+        description: Código HTTP retornado do backend
+      error:
+        type: string
+        description: Descrição do tipo do erro
+      exception:
+        type: string
+        description: Tipo da exceção
+      errors:
+        type: array
+        items:
+          type: object
+      message:
+        type: string
+        description: Descrição retornada do backend
+      path:
+        type: string
+        description: Path chamado
+      internalCode:
+        type: string
+        description: Código interno

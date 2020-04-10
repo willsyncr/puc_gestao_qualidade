@@ -1,0 +1,152 @@
+<ui:composition template="/WEB-INF/layout.xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="body">
+		<f:metadata>
+			<ui:param name="bodyParam" value="Envia Recall" />
+		</f:metadata>
+		<style type="text/css">
+			/*demo*/
+			.ui-dataview-list .ui-dataview-row {
+				border-bottom: 1px solid #A8A8A8;
+				padding: 25px 10px;
+				/* with the exported variables from Nova and Luna Themes*/
+				border-bottom-color: var(- -input-border-color, #A8A8A8);
+			}
+			
+			.logo {
+				width: 5%;
+			}
+			
+			.detail {
+				width: 85%;
+				padding-left: 25px;
+			}
+		</style>
+
+		<h:form id="tratar">
+			<p:growl id="growl" showDetail="false" sticky="false" />
+
+			<p:dataView var="incidente" value="#{recallMB.incidentesTratados}" 
+					rendered="#{recallMB.usuarioTemPermissaoTela}"
+				gridIcon="pi pi-th-large" listIcon="pi pi-bars">
+
+				<p:dataViewListItem >
+					<h:panelGrid columns="3" style="width:100%" 
+						columnClasses="logo,detail">
+						<h:outputText value="#{incidente.id}" />
+
+						<p:outputPanel>
+							<h:panelGrid columns="2" cellpadding="5" >
+
+								<h:outputText value="Protocolo: " />
+								<h:outputText value="#{incidente.protocolo}"
+									style="font-weight: bold" />
+
+								<h:outputText value="Area:" />
+								<h:outputText value="#{incidente.area}"
+									style="font-weight: bold" />
+
+								<h:outputText value="Motivo:" />
+								<h:outputText value="#{incidente.motivo}"
+									style="font-weight: bold" />
+
+								<h:outputText value="Descisao Tratativa:" />
+								<h:outputText value="#{incidente.descricaoTratamento}"
+									style="font-weight: bold" />
+									
+								<h:outputText value="Parou Producao?" />
+								<h:outputText value="#{incidente.paraProducao}"
+									style="font-weight: bold" />
+
+								<h:outputText value="Status:" />
+								<h:outputText value="#{incidente.status}"
+									style="font-weight: bold" />
+
+								<h:outputText value="Enviado Recall:" />
+								<h:outputText value="#{incidente.recallEnviado}"
+									style="font-weight: bold" />
+							</h:panelGrid>
+						</p:outputPanel>
+
+						<p:commandLink update="tratar"
+							oncomplete="PF('incidenteDialog').show()" title="View Detail">
+							<h:outputText value="RECALL" />
+							<f:setPropertyActionListener value="#{incidente}"
+								target="#{recallMB.selectedIncidente}" />
+						</p:commandLink>
+					</h:panelGrid>
+				</p:dataViewListItem>
+			</p:dataView>
+
+			<p:dialog header="Montar Recall" widgetVar="incidenteDialog" modal="false"
+				showEffect="fade" hideEffect="fade" resizable="true" style="text-align: left;">
+				<p:outputPanel id="incidenteDetail" style="align:center;">
+					<p:panelGrid columns="2"
+						rendered="#{not empty recallMB.selectedIncidente}"
+						columnClasses="label,value">
+						<f:facet name="header">
+							<h:outputText value="Incidente ID: #{recallMB.selectedIncidente.id}" />
+						</f:facet>
+
+						<h:outputText value="Usuario:" />
+						<p:inputText id="userName" disabled="true"
+							value="#{recallMB.usuarioLogado.nome}"></p:inputText>
+						
+						<h:outputText value="Protocolo:" />
+						<p:inputText id="protocolo" disabled="true"
+							value="#{recallMB.selectedIncidente.protocolo}"></p:inputText>
+							
+						<h:outputText value="Descricao Reportada: " />
+						<p:inputTextarea id="DescricaoRe"
+							value="#{recallMB.selectedIncidente.descricao}" rows="2"
+							disabled="true"
+							cols="50"></p:inputTextarea>
+							
+							
+						<h:outputText value="Perfil:" />
+						<p:inputText id="profileName" disabled="true"
+							value="#{recallMB.usuarioLogado.perfil}"></p:inputText>
+							
+						<h:outputText value="Data Tratamento: " />
+						<p:datePicker id="DataTratamento" disabled="true"
+							value="#{recallMB.selectedIncidente.dataTratamento}"
+							size="10" />
+
+						<h:outputText value="Status: " />
+						<p:selectOneMenu required="true" id="Status"  disabled="true"
+							value="#{recallMB.selectedIncidente.status}"
+							style="width:125px">
+							<f:selectItem itemLabel="Selecione" itemValue="" />
+							<f:selectItem itemLabel="Inativo" itemValue="Inativo" />
+							<f:selectItem itemLabel="Tratado" itemValue="Tratado" />
+						</p:selectOneMenu>
+
+						<h:outputText value="Descricao Tratativa: " />
+						<p:inputTextarea id="DescricaoTratativa"  disabled="true"
+							value="#{recallMB.selectedIncidente.descricaoTratamento}" rows="2"
+							cols="50" required="true"></p:inputTextarea>
+
+						<h:outputText value="Texto a ser Evniado no Recall: " />
+						<p:inputTextarea id="DescricaoEnvioRecall"  
+							value="#{recallMB.selectedIncidente.textoRecall}" rows="8"
+							cols="50" required="true"></p:inputTextarea>
+						
+					</p:panelGrid>
+				</p:outputPanel>
+				<h:panelGrid id="bt1" columns="2" cellpadding="4"
+					rendered="#{recallMB.usuarioTemPermissaoTela}">
+					<p:commandButton value="ENVIAR RECALL" id="ENVIAR"
+						action="#{recallMB.enviarRecall}" update="tratar" />
+				</h:panelGrid>
+			</p:dialog>
+
+			<p:outputLabel
+				rendered="#{recallMB.usuarioTemPermissaoTela eq false}"
+				style="color: red">USUARIO NAO POSSUI PERMISSAO PARA ACESSAR ESSA PAGINA</p:outputLabel>
+		</h:form>
+	</ui:define>
+</ui:composition>
